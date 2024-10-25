@@ -339,7 +339,7 @@ class Processor():
         self.loss = nn.CrossEntropyLoss().cuda(output_device)
 
         if self.arg.weights:
-            self.global_step = int(self.arg.weights[:-3].split('-')[-1])
+            #self.global_step = int(self.arg.weights[:-3].split('_')[-1])
             self.print_log('Load weights from {}.'.format(self.arg.weights))
             if '.pkl' in self.arg.weights:
                 with open(self.arg.weights, 'r') as f:
@@ -500,8 +500,8 @@ class Processor():
 
             with torch.cuda.amp.autocast(enabled=use_amp):
 
-                output, z = self.model(data, F.one_hot(label, num_classes=self.model.module.num_class), joint)
-                # output, z = self.model(data, F.one_hot(label, num_classes=self.model.num_class), joint)
+                #output, z = self.model(data, F.one_hot(label, num_classes=self.model.module.num_class), joint)
+                output, z = self.model(data, F.one_hot(label, num_classes=self.model.num_class), joint)
 
                 ## for mmd loss
                 # output, y, z = self.model(data, F.one_hot(label, num_classes=self.model.module.num_class))
@@ -585,8 +585,8 @@ class Processor():
                     data = data.float().cuda(self.output_device)
                     label = label.long().cuda(self.output_device)
                     # for mmd
-                    output, y = self.model(data, F.one_hot(label, num_classes=self.model.module.num_class), joint)
-                    # output, y = self.model(data, F.one_hot(label, num_classes=self.model.num_class))
+                    #output, y = self.model(data, F.one_hot(label, num_classes=self.model.module.num_class), joint)
+                    output, y = self.model(data, F.one_hot(label, num_classes=self.model.num_class), joint)
 
 
 
@@ -676,7 +676,7 @@ class Processor():
                         k, 100 * self.data_loader[ln].dataset.top_k(score_ema, k)))
 
             if save_score:
-                with open('{}/epoch{}_{}_score.pkl'.format(
+                with open('{}/epoch{}_{}_score_B.pkl'.format(
                         self.arg.work_dir, epoch + 1, ln), 'wb') as f:
                     pickle.dump(score_dict, f)
 
@@ -782,7 +782,7 @@ if __name__ == '__main__':
     p = parser.parse_args()
     if p.config is not None:
         with open(p.config, 'r') as f:
-            default_arg = yaml.load(f)
+            default_arg = yaml.load(f, Loader=yaml.FullLoader)
         key = vars(p).keys()
         for k in default_arg.keys():
             if k not in key:

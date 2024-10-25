@@ -1,0 +1,8 @@
+# 数据集
+data/uav-human
+
+
+# 输出
+output
+env
+checkpoints/*

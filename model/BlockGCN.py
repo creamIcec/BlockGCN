@@ -339,7 +339,7 @@ class Topo(nn.Module):
         x = (x-torch.min(x))/(torch.max(x)-torch.min(x))
         x = self.vr(x)
         x = make_tensor(x)
-        x = self.pl(x)
+        x = self.pl(x.to('cuda'))
         return x
 
 

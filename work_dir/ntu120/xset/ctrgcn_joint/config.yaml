@@ -1,0 +1,75 @@
+# command line: main.py --config config/team/blockgcn_J_3d.yaml
+
+alpha: false
+base_lr: 0.05
+batch_size: 64
+config: config/team/blockgcn_J_3d.yaml
+device:
+- 0
+ema: false
+eval_interval: 5
+feeder: feeders.feeder_ntu.Feeder
+ignore_weights: []
+joint_label: []
+lambda_1: 0.0001
+lambda_2: 0.1
+log_interval: 100
+lr_decay_rate: 0.1
+model: model.BlockGCN.Model
+model_args:
+  graph: graph.Simcc.Graph
+  graph_args:
+    labeling_mode: spatial
+  num_class: 155
+  num_person: 2
+  num_point: 17
+model_saved_name: ''
+momentum: 0.9
+nesterov: true
+num_epoch: 140
+num_worker: 16
+optimizer: SGD
+phase: train
+print_log: true
+save_epoch: 10
+save_interval: 1
+save_score: true
+seed: 1
+show_topk:
+- 1
+- 5
+start_epoch: 0
+step:
+- 110
+- 120
+test_batch_size: 64
+test_feeder_args:
+  bone: false
+  data_path: ./data/uav-human/3d/test_joint_A.npy
+  debug: false
+  label_path: ./data/uav-human/3d/test_label_A.npy
+  p_interval:
+  - 0.95
+  split: test
+  vel: false
+  window_size: 64
+train_feeder_args:
+  bone: false
+  data_path: ./data/uav-human/3d/train_joint.npy
+  debug: false
+  label_path: ./data/uav-human/3d/train_label.npy
+  normalization: false
+  p_interval:
+  - 0.5
+  - 1
+  random_choose: false
+  random_move: false
+  random_rot: true
+  random_shift: false
+  split: train
+  vel: false
+  window_size: 64
+warm_up_epoch: 5
+weight_decay: 0.0004
+weights: null
+work_dir: ./work_dir/ntu120/xset/ctrgcn_joint
