@@ -109,9 +109,9 @@ class FeederUAVHuman(Feeder):
             data_numpy = tools.random_rot(data_numpy)
             joint = data_numpy
         if self.bone:
-            from .bone_pairs import ntu_pairs
+            from .bone_pairs import coco_pairs
             bone_data_numpy = np.zeros_like(data_numpy)
-            for v1, v2 in ntu_pairs:
+            for v1, v2 in coco_pairs:
                 bone_data_numpy[:, :, v1 - 1] = data_numpy[:, :, v1 - 1] - data_numpy[:, :, v2 - 1]
 
         # keep spine center's trajectory !!! modified on July 4th, 2022
