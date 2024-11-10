@@ -1,10 +1,11 @@
-work_dir: ./work_dir/ntu60/xview/ctrgcn_joint
+work_dir: ./output/uav-human/blockgcn_J_3d
 
 # feeder
-feeder: feeders.feeder_ntu.Feeder
+feeder: feeders.feeder_uav_human.FeederUAVHuman
 train_feeder_args:
-  data_path: data/ntu60/NTU60_CV.npz
-  split: train
+  data_path: ./data/uav-human/3d/train_joint.npy
+  label_path: ./data/uav-human/3d/train_label.npy
+  data_split: train
   debug: False
   random_choose: False
   random_shift: False
@@ -13,27 +14,29 @@ train_feeder_args:
   normalization: False
   random_rot: True
   p_interval: [0.5, 1]
-  vel: True
+  vel: False
   bone: False
 
 test_feeder_args:
-  data_path: data/ntu60/NTU60_CV.npz
-  split: test
+  data_path: ./data/uav-human/3d/test_joint_A.npy
+  label_path: ./data/uav-human/3d/test_label_A.npy
+  data_split: test
   window_size: 64
   p_interval: [0.95]
-  vel: True
+  vel: False
   bone: False
   debug: False
 
 # model
-model: model.ctrgcn.Model
+model: model.BlockGCN.Model
 model_args:
-  num_class: 60
-  num_point: 25
+  num_class: 155
+  num_point: 17
   num_person: 2
-  graph: graph.ntu_rgb_d.Graph
+  graph: graph.Simcc.Graph
   graph_args:
     labeling_mode: 'spatial'
+
 #optim
 weight_decay: 0.0004
 base_lr: 0.05
@@ -47,4 +50,3 @@ batch_size: 64
 test_batch_size: 64
 num_epoch: 140
 nesterov: True
-

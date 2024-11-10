@@ -6,3 +6,8 @@ data/uav-human
 output
 env
 checkpoints/*
+work_dir
+
+
+# 字节码
+*.pyc

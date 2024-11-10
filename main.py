@@ -249,6 +249,12 @@ def get_parser():
         default=0.1,
         help='decay rate for learning rate')
     parser.add_argument('--warm_up_epoch', type=int, default=0)
+    parser.add_argument(
+        '--enhance_class_list', 
+        type=int,
+        default=[],
+        nargs='+',
+        help='the classes for which need to be enhanced')
 
     return parser
 

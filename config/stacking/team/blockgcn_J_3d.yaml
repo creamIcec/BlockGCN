@@ -1,24 +1,26 @@
-work_dir: ./work_dir/ntu120/xsub/ctrgcn_joint
+work_dir: ./output/uav-human/blockgcn_J_3d
 
 # feeder
-feeder: feeders.feeder_ntu.Feeder
+feeder: feeders.feeder_uav_human.FeederUAVHuman
 train_feeder_args:
-  data_path: data/ntu120/NTU120_CSub.npz
-  split: train
+  data_path: ../data/uav-human/3d/blending/new_train_joint_C.npy
+  label_path: ../data/uav-human/3d/blending/new_train_label_C.npy
+  data_split: train
   debug: False
   random_choose: False
   random_shift: False
   random_move: False
   window_size: 64
   normalization: False
-  random_rot: True
+  random_rot: False
   p_interval: [0.5, 1]
   vel: False
   bone: False
 
 test_feeder_args:
-  data_path: data/ntu120/NTU120_CSub.npz
-  split: test
+  data_path: ../data/uav-human/3d/val_joint_C.npy
+  label_path: ../data/uav-human/3d/val_label_C.npy
+  data_split: test
   window_size: 64
   p_interval: [0.95]
   vel: False
@@ -26,16 +28,14 @@ test_feeder_args:
   debug: False
 
 # model
-model: model.ctrgcn.Model
+model: model.BlockGCN.Model
 model_args:
-  num_class: 120
-  num_point: 25
+  num_class: 155
+  num_point: 17
   num_person: 2
-  graph: graph.ntu_rgb_d.Graph
+  graph: graph.Simcc.Graph
   graph_args:
     labeling_mode: 'spatial'
-  joint_label: [ 0, 4, 2, 2, 2, 2, 1, 1, 2, 2, 1, 1, 2, 3, 3, 3, 2, 3, 3, 3, 1, 0, 1, 0, 1 ]
-
 
 #optim
 weight_decay: 0.0004
@@ -50,3 +50,5 @@ batch_size: 64
 test_batch_size: 64
 num_epoch: 140
 nesterov: True
+start_epoch: 82
+weights: ./output/uav-human/blockgcn_J_3d/runs-81-17010.pt

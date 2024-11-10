@@ -23,7 +23,9 @@ class FeederUAVHuman(Feeder):
                  debug=False, 
                  use_mmap=False,
                  bone=False, 
-                 vel=False):
+                 vel=False,
+                 enhance_class_list=None
+                 ):
         """
         :param data_path:
         :param label_path:
@@ -38,7 +40,7 @@ class FeederUAVHuman(Feeder):
         :param use_mmap: If true, use mmap mode to load data, which can save the running memory
         :param bone: use bone modality or not
         :param vel: use motion modality or not
-        :param only_label: only load label for ensemble score compute
+        :param enlarge: whether enable enlarging process for samples with particular label.
         """
 
         self.debug = debug
@@ -55,6 +57,7 @@ class FeederUAVHuman(Feeder):
         self.random_rot = random_rot
         self.bone = bone
         self.vel = vel
+        self.enhance_class_list = enhance_class_list;
         self.load_data()
         if normalization:
             self.get_mean_map()
@@ -105,18 +108,20 @@ class FeederUAVHuman(Feeder):
         data_numpy = tools.valid_crop_resize(data_numpy, valid_frame_num, self.p_interval, self.window_size)
         center_index = 8;
         joint = data_numpy
+
         if self.random_rot:
-            data_numpy = tools.random_rot(data_numpy)
-            joint = data_numpy
+            if label in self.enhance_class_list:   #只对列表中的label进行随机旋转增强
+                data_numpy = tools.random_rot(data_numpy)
+                joint = data_numpy
+
         if self.bone:
             from .bone_pairs import coco_pairs
             bone_data_numpy = np.zeros_like(data_numpy)
             for v1, v2 in coco_pairs:
                 bone_data_numpy[:, :, v1 - 1] = data_numpy[:, :, v1 - 1] - data_numpy[:, :, v2 - 1]
-        # keep spine center's trajectory !!! modified on July 4th, 2022
+            # keep spine center's trajectory !!! modified on July 4th, 2022
             bone_data_numpy[:, :, center_index] = data_numpy[:, :, center_index]
             data_numpy = bone_data_numpy
-
         # for joint modality
         # separate trajectory from relative coordinate to each frame's spine center
         else:
@@ -125,13 +130,13 @@ class FeederUAVHuman(Feeder):
             # let spine of each frame be the joint coordinate center
             data_numpy = data_numpy - data_numpy[:, :, center_index:center_index+1]
 
-            data_numpy[:, :, center_index] = torch.tensor(trajectory)
+            data_numpy[:, :, center_index] = trajectory
 
         if self.vel:
             data_numpy[:, :-1] = data_numpy[:, 1:] - data_numpy[:, :-1]
             data_numpy[:, -1] = 0
 
-        return joint, data_numpy, label, index
+        return joint, torch.from_numpy(data_numpy), label, index
 
     def top_k(self, score, top_k):
         rank = score.argsort()

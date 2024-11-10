@@ -1,10 +1,10 @@
-work_dir: ./output/uav-human/blockgcn_J_3d
+work_dir: ./output/uav-human/random_rotate_special/blockgcn_J_3d
 
 # feeder
-feeder: feeders.feeder_uav_human.FeederUAVHuman
+feeder: feeders.feeder_uav_human_special.FeederUAVHuman
 train_feeder_args:
-  data_path: ../data/uav-human/3d/blending/new_train_joint_C.npy
-  label_path: ../data/uav-human/3d/blending/new_train_label_C.npy
+  data_path: ../data/uav-human/3d/train_joint_C.npy
+  label_path: ../data/uav-human/3d/train_label_C.npy
   data_split: train
   debug: False
   random_choose: False
@@ -12,10 +12,11 @@ train_feeder_args:
   random_move: False
   window_size: 64
   normalization: False
-  random_rot: False
+  random_rot: True
   p_interval: [0.5, 1]
   vel: False
   bone: False
+  enhance_class_list: [128,133,123,122,88,142,47,46,127,134]
 
 test_feeder_args:
   data_path: ../data/uav-human/3d/val_joint_C.npy
@@ -50,5 +51,5 @@ batch_size: 64
 test_batch_size: 64
 num_epoch: 140
 nesterov: True
-start_epoch: 82
-weights: ./output/uav-human/blockgcn_J_3d/runs-81-17010.pt
+#start_epoch: 82
+#weights: ./output/uav-human/blockgcn_J_3d/runs-81-17010.pt
